@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pricing | BrightSum</title>
+  <link rel="stylesheet" href="legal.css">
+  <link rel="stylesheet" href="pricing.css">
+</head>
+<body class="legal-page">
+  <main class="legal-wrap">
+    <nav class="legal-top"><a class="legal-brand" href="index.html"><span>+</span>BrightSum</a><div class="legal-nav"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a></div></nav>
+    <p>FAMILY PLANS</p>
+    <h1>Clear support.<br>Simple pricing.</h1>
+    <p class="pricing-lead">Every paid plan includes clear working, unlimited practice and parent progress visibility. Secure checkout accepts cards and Bacs Direct Debit.</p>
+    <div class="price-grid">
+      <article class="price-card"><h2>Practice</h2><p class="price">£4.99 <small>/ month</small></p><p>For one learner who wants to practise independently.</p><ul><li>One child profile</li><li>Maths learning paths</li><li>Worked solutions and hints</li><li>Progress view for parents</li></ul><button class="interest-button" data-plan="practice">Choose Practice</button></article>
+      <article class="price-card featured"><p class="best">BEST FOR FAMILIES</p><h2>Family</h2><p class="price">£9.99 <small>/ month</small></p><p>For a household learning together.</p><ul><li>Up to three child profiles</li><li>All Practice features</li><li>11+ practice and mini mocks</li><li>Family progress view</li></ul><button class="interest-button" data-plan="family">Choose Family</button></article>
+      <article class="price-card"><h2>Support</h2><p class="price">£19.99 <small>/ month</small></p><p>For families who want guided help too.</p><ul><li>All Family features</li><li>Weekly small-group question session</li><li>Priority saved-question review</li><li>Maximum 10 learners per session</li></ul><button class="interest-button" data-plan="support">Choose Support</button></article>
+    </div>
+    <div class="pricing-note"><h2>14-day first-subscription refund</h2><p>Cancel any time. Your subscription stays active until the end of the period you have already paid for. Read the full <a href="refunds.html">Refund and Cancellation Policy</a>.</p><p class="checkout-message" id="checkoutMessage" aria-live="polite"></p></div>
+    <footer><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refunds.html">Refunds</a><a href="cookies.html">Cookies</a></footer>
+  </main>
+  <script>
+    const checkoutEndpoint = 'https://europe-west2-brightsum-3d5aa.cloudfunctions.net/createCheckoutSession';
+    document.querySelectorAll('.interest-button').forEach(button => button.onclick = async () => {
+      const message = document.querySelector('#checkoutMessage');
+      document.querySelectorAll('.interest-button').forEach(item => item.disabled = true);
+      message.textContent = 'Opening secure checkout…';
+      try {
+        const result = await fetch(checkoutEndpoint, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({plan: button.dataset.plan})});
+        const body = await result.json();
+        if (!result.ok || !body.url) throw new Error(body.error || 'Checkout is unavailable.');
+        location.assign(body.url);
+      } catch (error) {
+        message.textContent = error.message || 'Checkout is temporarily unavailable.';
+        document.querySelectorAll('.interest-button').forEach(item => item.disabled = false);
+      }
+    });
+  </script>
+</body>
+</html>
