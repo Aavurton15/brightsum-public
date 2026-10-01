@@ -16,13 +16,26 @@
     <p><a href="index.html">Return to BrightSum</a></p>
   </main>
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      if (window.brightSumMeasurement) {
+    document.addEventListener('DOMContentLoaded', async function () {
+      const sessionId = new URLSearchParams(location.search).get('session_id');
+      if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId || '')) return;
+      const eventKey = `brightsum_ads_subscription_${sessionId}`;
+      if (sessionStorage.getItem(eventKey)) return;
+      try {
+        const response = await fetch('https://europe-west2-brightsum-3d5aa.cloudfunctions.net/verifyCheckoutSession?session_id=' + encodeURIComponent(sessionId), {
+          headers: {Accept: 'application/json'}, credentials: 'omit'
+        });
+        const result = await response.json();
+        if (!response.ok || result.verified !== true || result.sessionId !== sessionId || !window.brightSumMeasurement) return;
+        sessionStorage.setItem(eventKey, 'sent');
         window.brightSumMeasurement.event('conversion', {
           send_to: 'AW-18434743732/FKcvCPO-zYwdELS7r9ZE',
+          transaction_id: sessionId,
           value: 1.0,
           currency: 'GBP'
         });
+      } catch (_) {
+        // A failed verification must never become a conversion.
       }
     });
   </script>
