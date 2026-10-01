@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Payment received | BrightSum</title>
   <meta name="robots" content="noindex,nofollow,noarchive">
+  <script src="google-measurement.js?v=20261001a" defer></script>
   <link rel="stylesheet" href="legal.css">
 </head>
 <body class="legal-page">
@@ -14,5 +15,16 @@
     <p>Your checkout has been received. Keep the Stripe confirmation for your records.</p>
     <p><a href="index.html">Return to BrightSum</a></p>
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.brightSumMeasurement) {
+        window.brightSumMeasurement.event('conversion', {
+          send_to: 'AW-18434743732/FKcvCPO-zYwdELS7r9ZE',
+          value: 1.0,
+          currency: 'GBP'
+        });
+      }
+    });
+  </script>
 </body>
 </html>
