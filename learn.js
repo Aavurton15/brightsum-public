@@ -3,6 +3,8 @@ const message=document.querySelector('#message'),authCard=document.querySelector
 const [{initializeApp},{getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut,sendPasswordResetEmail},{getFunctions,httpsCallable},{initializeAppCheck,ReCaptchaEnterpriseProvider}]=await Promise.all([import('https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js'),import('https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js'),import('https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js'),import('https://www.gstatic.com/firebasejs/12.7.0/firebase-app-check.js')]);
 const app=initializeApp(window.BRIGHTSUM_FIREBASE_CONFIG); initializeAppCheck(app,{provider:new ReCaptchaEnterpriseProvider(window.BRIGHTSUM_APP_CHECK_SITE_KEY),isTokenAutoRefreshEnabled:true}); const auth=getAuth(app),functions=getFunctions(app,region);
 const call=name=>httpsCallable(functions,name); let learnerId='',batch=null;
+const requestedYear=new URLSearchParams(window.location.search).get('year');
+if(['Year 1','Year 2','Year 3','Year 4','Year 5','Year 6','Year 7','Year 8','Year 9','Year 10','11+'].includes(requestedYear))document.querySelector('#year').value=requestedYear;
 const escapeHtml=value=>String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 function speak(text){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(text));}
 function render(){questions.innerHTML='';questionNav.innerHTML=''; const completed=batch.completedQuestionIds?.length||0; progress.textContent=`${batch.year} · Batch ${(batch.batchIndex||0)+1} · ${completed} of ${batch.batchSize} completed`; document.querySelector('#learnerTitle').textContent=`${batch.year} practice`;
