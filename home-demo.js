@@ -32,8 +32,8 @@
     year.textContent = `${item.year} sample`;
     question.textContent = item.question;
     item.choices.forEach(choice => {
-      const option = document.createElement('button'); option.type = 'button'; option.className = 'demo-option'; option.textContent = choice; option.setAttribute('aria-pressed', 'false');
-      option.addEventListener('click', () => { answer = choice; [...answers.children].forEach(button => button.setAttribute('aria-pressed', String(button === option))); check.disabled = false; feedback.textContent = ''; explanation.hidden = true; });
+      const option = document.createElement('button'); option.type = 'button'; option.className = 'demo-option'; option.textContent = choice; option.setAttribute('role', 'radio'); option.setAttribute('aria-checked', 'false');
+      option.addEventListener('click', () => { answer = choice; [...answers.children].forEach(button => button.setAttribute('aria-checked', String(button === option))); check.disabled = false; feedback.textContent = ''; explanation.hidden = true; });
       answers.append(option);
     });
   };
