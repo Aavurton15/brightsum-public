@@ -35,7 +35,7 @@
     const auth=getAuth(initializeApp(window.BRIGHTSUM_FIREBASE_CONFIG));
     let parent=null;
     onAuthStateChanged(auth,async user=>{parent=user;if(!user){accountMessage.textContent='Sign in with the parent account to start a subscription.';return;}await reload(user);parent=auth.currentUser;accountMessage.textContent=parent.emailVerified?'Parent account verified. You can choose a plan.':'Check the verification email we sent, then refresh this page before subscribing.';});
-    document.querySelector('#parentAccountForm').addEventListener('submit',async event=>{event.preventDefault();const mode=event.submitter.dataset.mode,email=document.querySelector('#parentEmail').value.trim(),password=document.querySelector('#parentPassword').value;try{const result=mode==='create'?await createUserWithEmailAndPassword(auth,email,password):await signInWithEmailAndPassword(auth,email,password);if(mode==='create'){await sendEmailVerification(result.user);accountMessage.textContent='Account created. Verify the email before choosing a plan.';}}catch{accountMessage.textContent='We could not sign in with those details. Please check them and try again.';}});
+    document.querySelector('#parentAccountForm').addEventListener('submit',async event=>{event.preventDefault();const mode=event.submitter.dataset.mode,email=document.querySelector('#parentEmail').value.trim(),password=document.querySelector('#parentPassword').value;try{const result=mode==='create'?await createUserWithEmailAndPassword(auth,email,password):await signInWithEmailAndPassword(auth,email,password);if(mode==='create'){await sendEmailVerification(result.user);if(window.brightSumMeasurement)window.brightSumMeasurement.event('registration_complete');accountMessage.textContent='Account created. Verify the email before choosing a plan.';}}catch{accountMessage.textContent='We could not sign in with those details. Please check them and try again.';}});
     document.querySelector('#resetPassword').onclick=async()=>{const email=document.querySelector('#parentEmail').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){accountMessage.textContent='Enter your parent email address first.';return;}try{await sendPasswordResetEmail(auth,email);accountMessage.textContent='If that address has a BrightSum account, we have sent password-reset instructions.';}catch{accountMessage.textContent='We could not start password recovery. Please try again shortly.';}};
     document.querySelectorAll('.interest-button').forEach(button => button.onclick = async () => {
       const message = document.querySelector('#checkoutMessage');
@@ -49,6 +49,7 @@
         const result = await fetch(checkoutEndpoint, {method: 'POST', headers: {'Content-Type': 'application/json','Authorization':`Bearer ${token}`}, body: JSON.stringify({plan: button.dataset.plan})});
         const body = await result.json();
         if (!result.ok || !body.url) throw new Error(body.error || 'Checkout is unavailable.');
+        if(window.brightSumMeasurement)window.brightSumMeasurement.event('checkout_started',{plan:String(button.dataset.plan||'').slice(0,20)});
         location.assign(body.url);
       } catch (error) {
         message.textContent = error.message || 'Checkout is temporarily unavailable.';

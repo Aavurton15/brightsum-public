@@ -28,6 +28,7 @@
         const result = await response.json();
         if (!response.ok || result.verified !== true || result.sessionId !== sessionId || !window.brightSumMeasurement) return;
         sessionStorage.setItem(eventKey, 'sent');
+        window.brightSumMeasurement.event('subscription_success');
         window.brightSumMeasurement.event('conversion', {
           send_to: 'AW-18434743732/FKcvCPO-zYwdELS7r9ZE',
           transaction_id: sessionId,
