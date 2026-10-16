@@ -21,7 +21,9 @@
   const readWorking = document.createElement('button');
   readWorking.type = 'button'; readWorking.className = 'check-demo cta cta-primary'; readWorking.textContent = 'Can I help you with this question?'; readWorking.hidden = true;
   explanation.after(readWorking);
-  const speak = text => { if (!('speechSynthesis' in window)) return; const voices = speechSynthesis.getVoices(); const preferred = voices.find(voice => /^en-(GB|UK)/i.test(voice.lang) && /female|woman|hazel|libby|susan|sonia|olivia|samantha|ava|emma|zira/i.test(voice.name)) || voices.find(voice => /female|woman|hazel|libby|susan|sonia|olivia|samantha|ava|emma|zira/i.test(voice.name)); const utterance = new SpeechSynthesisUtterance(text); if (preferred) utterance.voice = preferred; speechSynthesis.cancel(); speechSynthesis.speak(utterance); };
+  const femaleVoiceName = /female|woman|hazel|libby|susan|sonia|olivia|samantha|ava|emma|zira|aria|jenny|natasha|karen|moira|tessa|victoria|fiona|serena|veena|allison|joanna|kimberly|kendra|ivy/i;
+  if ('speechSynthesis' in window) { speechSynthesis.getVoices(); speechSynthesis.addEventListener?.('voiceschanged', () => speechSynthesis.getVoices()); }
+  const speak = text => { if (!('speechSynthesis' in window)) return; const voices = speechSynthesis.getVoices(); const preferred = voices.find(voice => /^en-(GB|UK)/i.test(voice.lang) && femaleVoiceName.test(voice.name)) || voices.find(voice => femaleVoiceName.test(voice.name)); const utterance = new SpeechSynthesisUtterance(text); if (preferred) utterance.voice = preferred; speechSynthesis.cancel(); speechSynthesis.speak(utterance); };
   let selected = 0;
   let answer = '';
   const render = index => {
