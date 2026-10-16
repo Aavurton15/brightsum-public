@@ -4,7 +4,7 @@
   const examples = [
     {year:'Year 1', question:'Mia has 3 apples. She gets 2 more. How many apples does she have?', choices:['4','5','6'], answer:'5', explanation:'3 apples and 2 apples make 5 apples.'},
     {year:'Year 2', question:'A juice costs 35p. You pay with 50p. How much change do you get?', choices:['10p','15p','20p'], answer:'15p', explanation:'50p − 35p = 15p.'},
-    {year:'Year 3/4', question:'What is 4 × 6?', choices:['10','20','24'], answer:'24', explanation:'Four groups of six make 24.'},
+    {year:'Year 3/4', question:'What is 4 × 6?', choices:['10','20','24'], answer:'24', explanation:'4 × 6 means four groups of six: 6 + 6 + 6 + 6 = 24.'},
     {year:'Year 5/6', question:'What is 25% of 40?', choices:['5','10','15'], answer:'10', explanation:'25% is one quarter, and one quarter of 40 is 10.'},
     {year:'Year 7/8', question:'Solve: 3x + 2 = 17. What is x?', choices:['3','5','7'], answer:'5', explanation:'Subtract 2, then divide 15 by 3.'},
     {year:'Year 9/10', question:'A right angle is split into 35° and one other angle. What is the other angle?', choices:['45°','55°','65°'], answer:'55°', explanation:'Angles in a right angle total 90°, so 90° − 35° = 55°.'},
@@ -40,9 +40,10 @@
   check.addEventListener('click', () => {
     const item = examples[selected];
     const correct = answer === item.answer;
-    feedback.textContent = correct ? 'Correct — well done!' : 'Not quite — try again.';
+    feedback.textContent = correct ? 'Correct — well done!' : 'Here is how to work it out:';
     feedback.className = `demo-feedback ${correct ? 'is-correct' : 'is-try-again'}`;
-    if (correct) { explanation.textContent = item.explanation; explanation.hidden = false; }
+    explanation.textContent = item.explanation;
+    explanation.hidden = false;
   });
   render(0);
 })();
