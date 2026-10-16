@@ -18,12 +18,16 @@
   const feedback = document.querySelector('.demo-feedback');
   const explanation = document.querySelector('.demo-explanation');
   if (!levels || !year || !question || !answers || !check || !feedback || !explanation) return;
+  const readWorking = document.createElement('button');
+  readWorking.type = 'button'; readWorking.className = 'check-demo cta cta-primary'; readWorking.textContent = 'Read the working aloud'; readWorking.hidden = true;
+  explanation.after(readWorking);
+  const speak = text => { if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } };
   let selected = 0;
   let answer = '';
   const render = index => {
     selected = index;
     answer = '';
-    levels.replaceChildren(); answers.replaceChildren(); feedback.textContent = ''; explanation.hidden = true; explanation.textContent = ''; check.disabled = true;
+    levels.replaceChildren(); answers.replaceChildren(); feedback.textContent = ''; explanation.hidden = true; explanation.textContent = ''; readWorking.hidden = true; check.disabled = true;
     const item = examples[index];
     examples.forEach((example, position) => {
       const tab = document.createElement('button'); tab.type = 'button'; tab.className = 'demo-tab'; tab.textContent = example.year; tab.setAttribute('role', 'tab'); tab.setAttribute('aria-selected', String(position === index));
@@ -33,7 +37,7 @@
     question.textContent = item.question;
     item.choices.forEach(choice => {
       const option = document.createElement('button'); option.type = 'button'; option.className = 'demo-option'; option.textContent = choice; option.setAttribute('role', 'radio'); option.setAttribute('aria-checked', 'false');
-      option.addEventListener('click', () => { answer = choice; [...answers.children].forEach(button => button.setAttribute('aria-checked', String(button === option))); check.disabled = false; feedback.textContent = ''; explanation.hidden = true; });
+      option.addEventListener('click', () => { answer = choice; [...answers.children].forEach(button => button.setAttribute('aria-checked', String(button === option))); check.disabled = false; feedback.textContent = ''; explanation.hidden = true; readWorking.hidden = true; });
       answers.append(option);
     });
   };
@@ -44,6 +48,8 @@
     feedback.className = `demo-feedback ${correct ? 'is-correct' : 'is-try-again'}`;
     explanation.textContent = item.explanation;
     explanation.hidden = false;
+    readWorking.hidden = !('speechSynthesis' in window);
+    readWorking.onclick = () => speak(`${feedback.textContent} ${item.explanation}`);
   });
   render(0);
 })();
