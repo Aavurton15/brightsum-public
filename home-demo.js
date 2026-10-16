@@ -2,13 +2,13 @@
   'use strict';
   // Public, deliberately separate demo content. No Firebase or private question-bank calls are made here.
   const examples = [
-    {year:'Year 1', question:'Mia has 3 apples. She gets 2 more. How many apples does she have?', choices:['4','5','6'], answer:'5', explanation:'3 apples and 2 apples make 5 apples.'},
-    {year:'Year 2', question:'A juice costs 35p. You pay with 50p. How much change do you get?', choices:['10p','15p','20p'], answer:'15p', explanation:'50p − 35p = 15p.'},
-    {year:'Year 3/4', question:'What is 4 × 6?', choices:['10','20','24'], answer:'24', explanation:'4 × 6 means four groups of six: 6 + 6 + 6 + 6 = 24.'},
-    {year:'Year 5/6', question:'What is 25% of 40?', choices:['5','10','15'], answer:'10', explanation:'25% is one quarter, and one quarter of 40 is 10.'},
-    {year:'Year 7/8', question:'Solve: 3x + 2 = 17. What is x?', choices:['3','5','7'], answer:'5', explanation:'Subtract 2, then divide 15 by 3.'},
-    {year:'Year 9/10', question:'A right angle is split into 35° and one other angle. What is the other angle?', choices:['45°','55°','65°'], answer:'55°', explanation:'Angles in a right angle total 90°, so 90° − 35° = 55°.'},
-    {year:'11+', question:'Red and blue counters are in the ratio 2:3. If there are 8 red counters, how many blue counters are there?', choices:['10','12','16'], answer:'12', explanation:'If 2 parts are 8, one part is 4. Three parts are 12.'}
+    {year:'Year 1', question:'Mia has 3 apples. She gets 2 more. How many apples does she have?', choices:['4','5','6'], answer:'5', explanation:'3 apples and 2 apples make 5 apples.', voiceHelp:'Start with the three apples, then add two more. Count the apples one at a time.'},
+    {year:'Year 2', question:'A juice costs 35p. You pay with 50p. How much change do you get?', choices:['10p','15p','20p'], answer:'15p', explanation:'50p − 35p = 15p.', voiceHelp:'Start at 35 pence and count up to 50 pence. The amount you count is the change.'},
+    {year:'Year 3/4', question:'What is 4 × 6?', choices:['10','20','24'], answer:'24', explanation:'4 × 6 means four groups of six: 6 + 6 + 6 + 6 = 24.', voiceHelp:'Think of four equal groups of six. Add six four times and work out the total.'},
+    {year:'Year 5/6', question:'What is 25% of 40?', choices:['5','10','15'], answer:'10', explanation:'25% is one quarter, and one quarter of 40 is 10.', voiceHelp:'Twenty-five percent means one quarter. Split 40 into four equal parts, then find one part.'},
+    {year:'Year 7/8', question:'Solve: 3x + 2 = 17. What is x?', choices:['3','5','7'], answer:'5', explanation:'Subtract 2, then divide 15 by 3.', voiceHelp:'First undo the addition by taking 2 away from both sides. Then divide what is left by 3.'},
+    {year:'Year 9/10', question:'A right angle is split into 35° and one other angle. What is the other angle?', choices:['45°','55°','65°'], answer:'55°', explanation:'Angles in a right angle total 90°, so 90° − 35° = 55°.', voiceHelp:'A right angle always totals 90 degrees. Take the known angle away from 90 degrees.'},
+    {year:'11+', question:'Red and blue counters are in the ratio 2:3. If there are 8 red counters, how many blue counters are there?', choices:['10','12','16'], answer:'12', explanation:'If 2 parts are 8, one part is 4. Three parts are 12.', voiceHelp:'Two ratio parts stand for eight counters. Find one part first, then use that value for three parts.'}
   ];
   const levels = document.querySelector('.demo-levels');
   const year = document.querySelector('.demo-year');
@@ -19,7 +19,7 @@
   const explanation = document.querySelector('.demo-explanation');
   if (!levels || !year || !question || !answers || !check || !feedback || !explanation) return;
   const readWorking = document.createElement('button');
-  readWorking.type = 'button'; readWorking.className = 'check-demo cta cta-primary'; readWorking.textContent = 'Read the working aloud'; readWorking.hidden = true;
+  readWorking.type = 'button'; readWorking.className = 'check-demo cta cta-primary'; readWorking.textContent = 'Can I help you with this question?'; readWorking.hidden = true;
   explanation.after(readWorking);
   const speak = text => { if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } };
   let selected = 0;
@@ -48,8 +48,8 @@
     feedback.className = `demo-feedback ${correct ? 'is-correct' : 'is-try-again'}`;
     explanation.textContent = item.explanation;
     explanation.hidden = false;
-    readWorking.hidden = !('speechSynthesis' in window);
-    readWorking.onclick = () => speak(`${feedback.textContent} ${item.explanation}`);
+    readWorking.hidden = correct || !('speechSynthesis' in window);
+    readWorking.onclick = () => speak(`Can I help you with this question? ${item.voiceHelp}`);
   });
   render(0);
 })();
