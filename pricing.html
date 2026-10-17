@@ -38,7 +38,7 @@
     const storageKey='brightsum-selected-plan';
     let selected=null,parent=null,verified=false,auth=null,reloadUser=null;
     try { const stored=localStorage.getItem(storageKey); if(Object.hasOwn(plans,stored)) selected=stored; } catch {}
-    function render(){selectedLabel.textContent=selected?`Selected plan: ${plans[selected]}`:'Choose a plan above to get started.';continueButton.hidden=!(selected&&verified);refreshButton.hidden=!parent||verified;}
+    function render(){selectedLabel.textContent=selected?`Selected plan: ${plans[selected]}`:'Choose a plan above to get started.';document.querySelectorAll('.interest-button').forEach(button=>{const active=button.dataset.plan===selected;button.setAttribute('aria-pressed',String(active));button.closest('.price-card').classList.toggle('is-selected',active);button.textContent=(active?'✓ Selected: ':'Choose ')+button.dataset.plan[0].toUpperCase()+button.dataset.plan.slice(1);});continueButton.hidden=!(selected&&verified);refreshButton.hidden=!parent||verified;}
     render();
     document.querySelectorAll('.interest-button').forEach(button=>button.addEventListener('click',()=>{selected=button.dataset.plan;try{localStorage.setItem(storageKey,selected);}catch{accountMessage.textContent='Your plan is selected for this page, but could not be saved for a later visit.';}message.textContent='';render();document.querySelector('#parentAccountTitle').focus();}));
     try {
